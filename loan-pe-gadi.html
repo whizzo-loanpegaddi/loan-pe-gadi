@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan Pe Gadi — Gadi ka Loan, Aasan Raste Se</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12213B;
+    --paper:#FAF6EF;
+    --card:#FFFFFF;
+    --marigold:#F2A93B;
+    --marigold-dark:#D98E1E;
+    --hwy-green:#1F6B3B;
+    --hwy-green-dark:#154D2A;
+    --asphalt:#565B66;
+    --asphalt-light:#8A8F99;
+    --alert:#C6433B;
+    --line:#E4DECF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{ font-family:'Baloo 2',sans-serif; }
+  .mono{ font-family:'IBM Plex Mono',monospace; }
+  a{ color:inherit; }
+  button{ font-family:inherit; cursor:pointer; }
+  input,select,textarea{ font-family:inherit; }
+  ::selection{ background:var(--marigold); color:var(--ink); }
+  :focus-visible{ outline:3px solid var(--marigold); outline-offset:2px; }
+
+  #root{ min-height:100vh; }
+
+  /* ---------- Utility ---------- */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:12px 22px; border-radius:10px; border:2px solid transparent;
+    font-weight:700; font-size:15px; transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:active{ transform:scale(.97); }
+  .btn-primary{ background:var(--marigold); color:var(--ink); }
+  .btn-primary:hover{ background:var(--marigold-dark); }
+  .btn-outline{ background:transparent; border-color:var(--ink); color:var(--ink); }
+  .btn-outline:hover{ background:var(--ink); color:var(--paper); }
+  .btn-green{ background:var(--hwy-green); color:#fff; }
+  .btn-green:hover{ background:var(--hwy-green-dark); }
+  .btn-alert{ background:var(--alert); color:#fff; }
+  .btn-ghost{ background:transparent; border-color:var(--line); color:var(--asphalt); }
+  .btn-ghost:hover{ border-color:var(--ink); color:var(--ink); }
+  .btn-sm{ padding:8px 14px; font-size:13px; border-radius:8px; }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+  .pill{ display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:999px; font-size:12px; font-weight:700; letter-spacing:.02em; }
+  .pill-submitted{ background:#E9E1FF; color:#4B2FBF; }
+  .pill-under_review{ background:#FFEFCF; color:#8A5A00; }
+  .pill-approved{ background:#DCF3E4; color:var(--hwy-green-dark); }
+  .pill-rejected{ background:#FBE1DE; color:var(--alert); }
+  .pill-disbursed{ background:var(--ink); color:#fff; }
+
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px; }
+  .container{ max-width:1120px; margin:0 auto; padding:0 24px; }
+
+  /* ---------- Highway signboard (signature element) ---------- */
+  .hwy-board{
+    background:var(--hwy-green);
+    border:3px solid #fff;
+    box-shadow:0 0 0 3px var(--hwy-green-dark);
+    border-radius:6px;
+    color:#fff;
+    padding:18px 20px;
+    position:relative;
+    font-family:'Baloo 2',sans-serif;
+  }
+  .hwy-board::before{
+    content:"";
+    position:absolute; inset:6px;
+    border:1.5px dashed rgba(255,255,255,.45);
+    border-radius:3px;
+    pointer-events:none;
+  }
+  .hwy-post{
+    width:10px; height:34px; background:var(--asphalt-light);
+    margin:0 auto; border-radius:0 0 3px 3px;
+  }
+
+  /* ---------- Top nav ---------- */
+  .topnav{
+    background:var(--ink); color:#fff;
+    padding:14px 0;
+    position:sticky; top:0; z-index:40;
+  }
+  .topnav .row{ display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:20px; }
+  .brand .tag{ background:var(--marigold); color:var(--ink); font-size:10px; font-weight:800; padding:2px 7px; border-radius:5px; letter-spacing:.04em; }
+
+  /* ---------- Landing ---------- */
+  .hero{ padding:64px 0 40px; }
+  .hero h1{ font-size:44px; line-height:1.08; margin:0 0 6px; }
+  .hero .hi{ color:var(--marigold-dark); }
+  .hero p.lede{ font-size:18px; color:var(--asphalt); max-width:520px; margin:14px 0 28px; }
+  .road-divider{
+    height:10px; background:var(--asphalt); border-radius:6px; position:relative; margin:48px 0 40px;
+    background-image: repeating-linear-gradient(90deg, #fff 0 26px, transparent 26px 46px);
+    background-position:center; background-repeat:repeat-x; background-size:auto 3px; background-blend-mode:normal;
+  }
+  .roles-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-top:8px; }
+  @media (max-width:900px){ .roles-grid{ grid-template-columns:repeat(2,1fr); } .hero h1{ font-size:32px; } }
+  @media (max-width:560px){ .roles-grid{ grid-template-columns:1fr; } }
+  .role-card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px;
+    display:flex; flex-direction:column; gap:10px; text-align:left; transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .role-card:hover{ transform:translateY(-4px); box-shadow:0 12px 24px rgba(18,33,59,.10); }
+  .role-card .icon{ font-size:30px; }
+  .role-card h3{ margin:0; font-size:19px; }
+  .role-card p{ margin:0; color:var(--asphalt); font-size:13.5px; line-height:1.5; flex:1; }
+  .role-card .hi-label{ font-size:12px; color:var(--asphalt-light); }
+
+  /* ---------- Auth screen ---------- */
+  .auth-wrap{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px 16px; }
+  .auth-card{ width:100%; max-width:420px; }
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:13px; font-weight:700; margin-bottom:6px; color:var(--ink); }
+  .field .hi-label{ font-weight:400; color:var(--asphalt-light); font-size:12px; }
+  .field input, .field select, .field textarea{
+    width:100%; padding:12px 14px; border-radius:10px; border:1.5px solid var(--line); background:#fff; font-size:14px; color:var(--ink);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--marigold-dark); }
+  .field textarea{ resize:vertical; min-height:80px; }
+
+  /* ---------- Dashboard layout ---------- */
+  .dash{ display:flex; min-height:calc(100vh - 64px); }
+  .sidebar{ width:220px; flex-shrink:0; background:#fff; border-right:1px solid var(--line); padding:20px 12px; }
+  .sidebar button{
+    display:flex; align-items:center; gap:10px; width:100%; text-align:left; padding:11px 14px; border-radius:10px;
+    background:transparent; border:none; color:var(--asphalt); font-weight:600; font-size:14px; margin-bottom:4px;
+  }
+  .sidebar button.active{ background:var(--ink); color:#fff; }
+  .sidebar button:hover:not(.active){ background:var(--paper); color:var(--ink); }
+  .main{ flex:1; padding:28px 32px; min-width:0; }
+  @media (max-width:800px){
+    .dash{ flex-direction:column; }
+    .sidebar{ width:100%; display:flex; overflow-x:auto; gap:6px; border-right:none; border-bottom:1px solid var(--line); }
+    .sidebar button{ white-space:nowrap; margin-bottom:0; }
+    .main{ padding:20px; }
+  }
+
+  .section-title{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:10px; }
+  .section-title h2{ margin:0; font-size:24px; }
+
+  .stat-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+  @media (max-width:800px){ .stat-grid{ grid-template-columns:repeat(2,1fr); } }
+  .stat{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px; }
+  .stat .num{ font-family:'Baloo 2'; font-size:28px; font-weight:700; }
+  .stat .lbl{ font-size:12.5px; color:var(--asphalt); margin-top:2px; }
+
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  th{ text-align:left; padding:10px 12px; color:var(--asphalt); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; border-bottom:2px solid var(--line); }
+  td{ padding:12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  tr:last-child td{ border-bottom:none; }
+
+  .upload-box{
+    border:2px dashed var(--line); border-radius:12px; padding:18px; text-align:center; cursor:pointer;
+    color:var(--asphalt); font-size:13.5px; transition:border-color .15s;
+  }
+  .upload-box:hover{ border-color:var(--marigold-dark); color:var(--ink); }
+  .file-chip{
+    display:flex; align-items:center; justify-content:space-between; gap:8px; background:var(--paper);
+    border:1px solid var(--line); border-radius:9px; padding:8px 12px; font-size:12.5px; margin-top:8px;
+  }
+  .file-chip .name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .file-chip button{ background:none; border:none; color:var(--alert); font-weight:700; padding:2px 6px; }
+
+  .mic-row{ display:flex; align-items:center; gap:8px; }
+  .mic-btn{
+    display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%;
+    background:var(--paper); border:1.5px solid var(--line); font-size:17px; flex-shrink:0;
+  }
+  .mic-btn.listening{ background:var(--alert); color:#fff; border-color:var(--alert); animation:pulse 1s infinite; }
+  @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(198,67,59,.5);} 70%{ box-shadow:0 0 0 10px rgba(198,67,59,0);} 100%{ box-shadow:0 0 0 0 rgba(198,67,59,0);} }
+  .lang-select{ padding:9px 10px; border-radius:8px; border:1.5px solid var(--line); font-size:12.5px; background:#fff; }
+
+  .modal-bg{ position:fixed; inset:0; background:rgba(18,33,59,.55); display:flex; align-items:center; justify-content:center; z-index:100; padding:16px; }
+  .modal{ background:#fff; border-radius:16px; padding:26px; max-width:560px; width:100%; max-height:88vh; overflow-y:auto; }
+
+  .empty{ text-align:center; padding:50px 20px; color:var(--asphalt); }
+  .empty .big{ font-size:40px; margin-bottom:10px; }
+
+  .badge-role{ display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.12); padding:5px 12px; border-radius:999px; font-size:12px; font-weight:700; }
+
+  .toast{
+    position:fixed; bottom:22px; right:22px; background:var(--ink); color:#fff; padding:14px 20px; border-radius:12px;
+    font-size:14px; font-weight:600; box-shadow:0 10px 24px rgba(0,0,0,.25); z-index:200; max-width:320px;
+  }
+  .link-btn{ background:none; border:none; color:var(--marigold-dark); font-weight:700; text-decoration:underline; padding:0; font-size:inherit; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+/* =========================================================
+   LOAN PE GADI — prototype SPA
+   All data is stored in localStorage. No real backend.
+   ========================================================= */
+
+const LANGS = [
+  {code:'hi-IN', label:'हिंदी (Hindi)'},
+  {code:'en-IN', label:'English (India)'},
+  {code:'mr-IN', label:'मराठी (Marathi)'},
+  {code:'gu-IN', label:'ગુજરાતી (Gujarati)'},
+  {code:'ta-IN', label:'தமிழ் (Tamil)'},
+  {code:'te-IN', label:'తెలుగు (Telugu)'},
+  {code:'bn-IN', label:'বাংলা (Bengali)'},
+  {code:'kn-IN', label:'ಕನ್ನಡ (Kannada)'},
+  {code:'ml-IN', label:'മലയാളം (Malayalam)'},
+  {code:'pa-IN', label:'ਪੰਜਾਬੀ (Punjabi)'},
+  {code:'ur-IN', label:'اردو (Urdu)'},
+];
+
+const DB_KEY = 'lpg_db_v1';
+const uid = () => Math.random().toString(36).slice(2,10);
+const now = () => new Date().toISOString();
+const fmtDate = (iso) => new Date(iso).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+const inr = (n) => '₹' + Number(n||0).toLocaleString('en-IN');
+
+function seedDB(){
+  return {
+    users: [
+      {id:'admin-1', name:'System Admin', phone:'9999999999', role:'admin', createdAt: now()},
+    ],
+    vehicles: [],
+    applications: [],
+    voiceLang: 'hi-IN',
+    session: null,
+  };
+}
+
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(DB_KEY);
+    if(!raw) { const d = seedDB(); saveDB(d); return d; }
+    return JSON.parse(raw);
+  }catch(e){ const d = seedDB(); saveDB(d); return d; }
+}
+function saveDB(){ localStorage.setItem(DB_KEY, JSON.stringify(state)); }
+
+let state = loadDB();
+let draft = {}; // scratch space for in-progress forms (photos/docs/etc.)
+let recognition = null;
+let listeningFieldId = null;
+
+function toast(msg){
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=> t.remove(), 2800);
+}
+
+function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------- Speech recognition ---------- */
+function toggleMic(fieldId){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ toast('⚠️ Voice input isn\'t supported in this browser. Try Chrome.'); return; }
+
+  if(recognition && listeningFieldId === fieldId){
+    recognition.stop();
+    return;
+  }
+  if(recognition){ recognition.stop(); }
+
+  recognition = new SR();
+  recognition.lang = state.voiceLang;
+  recognition.interimResults = true;
+  recognition.continuous = true;
+  listeningFieldId = fieldId;
+
+  const micBtn = document.getElementById('mic-'+fieldId);
+  if(micBtn) micBtn.classList.add('listening');
+
+  let finalText = '';
+  const target = document.getElementById(fieldId);
+  const startingValue = target ? target.value : '';
+  const baseValue = startingValue ? startingValue + ' ' : '';
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    for(let i = e.resultIndex; i < e.results.length; i++){
+      const t = e.results[i][0].transcript;
+      if(e.results[i].isFinal) finalText += t + ' ';
+      else interim += t;
+    }
+    if(target) target.value = baseValue + finalText + interim;
+  };
+  recognition.onerror = (e) => {
+    toast('🎙️ Voice error: ' + e.error);
+    if(micBtn) micBtn.classList.remove('listening');
+  };
+  recognition.onend = () => {
+    if(micBtn) micBtn.classList.remove('listening');
+    listeningFieldId = null;
+  };
+  recognition.start();
+}
+
+function setVoiceLang(code){
+  state.voiceLang = code;
+  saveDB();
+}
+
+/* ---------- File upload helpers ---------- */
+function readFilesAsDataURL(fileList, cb){
+  const files = Array.from(fileList);
+  if(files.length === 0) return;
+  let results = [];
+  let remaining = files.length;
+  files.forEach(f => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      results.push({id: uid(), name: f.name, type: f.type, size: f.size, dataURL: reader.result});
+      remaining--;
+      if(remaining === 0) cb(results);
+    };
+    reader.readAsDataURL(f);
+  });
+}
+
+function renderFileChip(f, onRemove){
+  return `<div class="file-chip">
+    <a class="name" href="${f.dataURL}" target="_blank" title="${esc(f.name)}">📄 ${esc(f.name)}</a>
+    <button onclick="${onRemove}">✕</button>
+  </div>`;
+}
+
+/* ============================================================
+   ROUTER / RENDER
+   ============================================================ */
+function render(){
+  const root = document.getElementById('root');
+  if(!state.session){
+    root.innerHTML = state.session === null && draft.authRole ? renderAuth(draft.authRole) : renderLanding();
+  } else {
+    root.innerHTML = renderShell();
+  }
+}
+
+/* ---------- Landing ---------- */
+function renderLanding(){
+  const roleInfo = [
+    {role:'buyer', icon:'🧑\u200d💼', title:'Buyer', hi:'खरीदार', desc:'Find a vehicle, apply for a loan, upload your documents and track approval — all in one place.'},
+    {role:'seller', icon:'🚗', title:'Seller / Dealer', hi:'विक्रेता', desc:'List vehicles for sale with photos and papers, and see loan interest from verified buyers.'},
+    {role:'financer', icon:'🏦', title:'Financer', hi:'फाइनेंसर', desc:'Review loan applications, verify documents, and approve or reject with your own terms.'},
+    {role:'admin', icon:'🛡️', title:'Admin', hi:'प्रशासक', desc:'Oversee every user, listing and application on the platform from one control room.'},
+  ];
+  return `
+  <div class="topnav">
+    <div class="container row">
+      <div class="brand">🛣️ Loan Pe Gadi <span class="tag">BETA</span></div>
+      <div style="font-size:13px; opacity:.8;">गाड़ी का लोन, आसान रास्ते से</div>
+    </div>
+  </div>
+
+  <div class="container hero">
+    <h1>Your next vehicle's<br/><span class="hi">loan journey</span>,<br/>mapped out simply.</h1>
+    <p class="lede">Loan Pe Gadi connects buyers, sellers and financers on one road — with document uploads and voice input in Hindi and other Indian languages, so paperwork is never the roadblock.</p>
+
+    <div class="hwy-board" style="max-width:460px;">
+      <div style="font-size:11px; letter-spacing:.08em; opacity:.85; margin-bottom:6px;">AAGE RAASTA / ROUTES AHEAD</div>
+      <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:700;">
+        <span>Buyer</span><span class="mono">2 min</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:700;">
+        <span>Seller</span><span class="mono">3 min</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:700;">
+        <span>Financer</span><span class="mono">2 min</span>
+      </div>
+    </div>
+
+    <div class="road-divider"></div>
+
+    <div class="section-title"><h2 style="font-size:20px;">Choose how you'll travel with us</h2></div>
+    <div class="roles-grid">
+      ${roleInfo.map(r => `
+        <button class="role-card" onclick="goToAuth('${r.role}')" style="cursor:pointer;">
+          <div class="icon">${r.icon}</div>
+          <h3>${r.title}</h3>
+          <div class="hi-label">${r.hi}</div>
+          <p>${r.desc}</p>
+          <span class="btn btn-outline btn-sm" style="align-self:flex-start; margin-top:4px;">Continue →</span>
+        </button>
+      `).join('')}
+    </div>
+
+    <p style="margin-top:36px; font-size:13px; color:var(--asphalt-light);">
+      Platform admin? <button class="link-btn" onclick="goToAuth('admin')">Sign in here</button>
+    </p>
+  </div>
+  `;
+}
+
+function goToAuth(role){
+  draft.authRole = role;
+  draft.authMode = 'login';
+  render();
+}
+
+/* ---------- Auth ---------- */
+function renderAuth(role){
+  const roleLabels = {buyer:'Buyer', seller:'Seller / Dealer', financer:'Financer', admin:'Admin'};
+  const roleHi = {buyer:'खरीदार', seller:'विक्रेता', financer:'फाइनेंसर', admin:'प्रशासक'};
+  const isAdmin = role === 'admin';
+  const mode = draft.authMode || 'login';
+
+  return `
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <button class="link-btn" style="margin-bottom:18px;" onclick="draft={}; render();">← Back to routes</button>
+      <div class="card">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
+          <h2 style="margin:0;">${roleLabels[role]} sign in</h2>
+        </div>
+        <div class="hi-label" style="margin-bottom:18px; color:var(--asphalt-light); font-size:13px;">${roleHi[role]}</div>
+
+        ${!isAdmin ? `
+        <div style="display:flex; gap:8px; margin-bottom:20px;">
+          <button class="btn ${mode==='login' ? 'btn-primary' : 'btn-ghost'} btn-sm" onclick="draft.authMode='login'; render();" style="flex:1;">Log in</button>
+          <button class="btn ${mode==='signup' ? 'btn-primary' : 'btn-ghost'} btn-sm" onclick="draft.authMode='signup'; render();" style="flex:1;">Sign up</button>
+        </div>` : ''}
+
+        <form onsubmit="return handleAuthSubmit(event, '${role}', '${mode}')">
+          ${mode === 'signup' && !isAdmin ? `
+          <div class="field">
+            <label>Full name <span class="hi-label">पूरा नाम</span></label>
+            <input id="auth-name" type="text" placeholder="e.g. Rohit Sharma" required>
+          </div>` : ''}
+          <div class="field">
+            <label>${isAdmin ? 'Admin phone number' : 'Phone number'} <span class="hi-label">फ़ोन नंबर</span></label>
+            <input id="auth-phone" type="tel" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number" required>
+          </div>
+          ${isAdmin ? `
+          <div class="field">
+            <label>Admin access code</label>
+            <input id="auth-code" type="password" placeholder="Access code" required>
+          </div>` : ''}
+          <button class="btn btn-primary" type="submit" style="width:100%; margin-top:6px;">
+            ${mode === 'signup' ? 'Create account' : 'Continue'} →
+          </button>
+        </form>
+        ${isAdmin ? `<p style="font-size:12px; color:var(--asphalt-light); margin-top:14px;">Demo access code: <span class="mono">ADMIN123</span> · phone <span class="mono">9999999999</span></p>` : `<p style="font-size:12px; color:var(--asphalt-light); margin-top:14px;">Demo mode: no OTP needed — just enter any 10-digit number.</p>`}
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+function handleAuthSubmit(evt, role, mode){
+  evt.preventDefault();
+  const phone = document.getElementById('auth-phone').value.trim();
+
+  if(role === 'admin'){
+    const code = document.getElementById('auth-code').value.trim();
+    if(phone !== '9999999999' || code !== 'ADMIN123'){
+      toast('❌ Incorrect admin phone or access code.');
+      return false;
+    }
+    state.session = {userId:'admin-1', role:'admin'};
+    saveDB(); draft = {}; render();
+    return false;
+  }
+
+  if(phone.length !== 10){ toast('Enter a valid 10-digit phone number.'); return false; }
+
+  let user = state.users.find(u => u.phone === phone && u.role === role);
+
+  if(mode === 'signup'){
+    const name = document.getElementById('auth-name').value.trim();
+    if(!name){ toast('Please enter your name.'); return false; }
+    if(user){ toast('An account with this number already exists — try logging in.'); return false; }
+    user = {id: uid(), name, phone, role, createdAt: now()};
+    state.users.push(user);
+    saveDB();
+    toast('✅ Account created! Welcome, ' + name);
+  } else {
+    if(!user){ toast('No account found for this number. Try signing up instead.'); return false; }
+  }
+
+  state.session = {userId: user.id, role};
+  state.activeTab = null;
+  saveDB();
+  draft = {};
+  render();
+  return false;
+}
+
+function logout(){
+  state.session = null;
+  draft = {};
+  saveDB();
+  render();
+}
+
+/* ---------- Shell (post-login) ---------- */
+function currentUser(){ return state.users.find(u => u.id === state.session.userId); }
+
+function renderShell(){
+  const role = state.session.role;
+  const user = currentUser();
+  const tabs = {
+    buyer:    [['browse','Browse Vehicles','🔎'], ['apply','My Applications','📋'], ['emi','EMI Calculator','🧮'], ['profile','Profile','👤']],
+    seller:   [['listings','My Listings','🚙'], ['new','List a Vehicle','➕'], ['interest','Loan Interest','📥'], ['profile','Profile','👤']],
+    financer: [['queue','Application Queue','📬'], ['history','Decision History','🗂️'], ['profile','Profile','👤']],
+    admin:    [['overview','Overview','📊'], ['users','Users','👥'], ['vehicles','Vehicles','🚗'], ['applications','Applications','📄']],
+  }[role];
+
+  if(!state.activeTab) state.activeTab = tabs[0][0];
+
+  return `
+  <div class="topnav">
+    <div class="container row">
+      <div class="brand">🛣️ Loan Pe Gadi <span class="tag">BETA</span></div>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <select class="lang-select" onchange="setVoiceLang(this.value)" title="Voice input language">
+          ${LANGS.map(l => `<option value="${l.code}" ${state.voiceLang===l.code?'selected':''}>🎙️ ${l.label}</option>`).join('')}
+        </select>
+        <span class="badge-role">${role.toUpperCase()} · ${esc(user.name)}</span>
+        <button class="btn btn-outline btn-sm" style="border-color:rgba(255,255,255,.5); color:#fff;" onclick="logout()">Log out</button>
+      </div>
+    </div>
+  </div>
+  <div class="dash">
+    <div class="sidebar">
+      ${tabs.map(([key,label,icon]) => `
+        <button class="${state.activeTab===key?'active':''}" onclick="state.activeTab='${key}'; render();">${icon} ${label}</button>
+      `).join('')}
+    </div>
+    <div class="main">
+      ${renderTabContent(role, state.activeTab)}
+    </div>
+  </div>
+  `;
+}
+
+function renderTabContent(role, tab){
+  if(role === 'buyer'){
+    if(tab === 'browse') return renderBuyerBrowse();
+    if(tab === 'apply') return renderBuyerApplications();
+    if(tab === 'emi') return renderEMICalculator();
+    if(tab === 'profile') return renderProfile();
+  }
+  if(role === 'seller'){
+    if(tab === 'listings') return renderSellerListings();
+    if(tab === 'new') return renderSellerNewVehicle();
+    if(tab === 'interest') return renderSellerInterest();
+    if(tab === 'profile') return renderProfile();
+  }
+  if(role === 'financer'){
+    if(tab === 'queue') return renderFinancerQueue();
+    if(tab === 'history') return renderFinancerHistory();
+    if(tab === 'profile') return renderProfile();
+  }
+  if(role === 'admin'){
+    if(tab === 'overview') return renderAdminOverview();
+    if(tab === 'users') return renderAdminUsers();
+    if(tab === 'vehicles') return renderAdminVehicles();
+    if(tab === 'applications') return renderAdminApplications();
+  }
+  return '<p>Not found.</p>';
+}
+
+/* ============================================================
+   PROFILE (shared)
+   ============================================================ */
+function renderProfile(){
+  const u = currentUser();
+  return `
+  <div class="section-title"><h2>Profile <span class="hi-label" style="font-size:14px;">प्रोफ़ाइल</span></h2></div>
+  <div class="card" style="max-width:420px;">
+    <div class="field"><label>Name</label><input value="${esc(u.name)}" disabled></div>
+    <div class="field"><label>Phone</label><input value="${esc(u.phone)}" disabled></div>
+    <div class="field"><label>Role</label><input value="${u.role}" disabled></div>
+    <div class="field"><label>Member since</label><input value="${fmtDate(u.createdAt)}" disabled></div>
+    <p style="font-size:12.5px; color:var(--asphalt-light);">Editing profile details isn't wired up in this prototype yet.</p>
+  </div>
+  `;
+}
+
+/* ============================================================
+   BUYER
+   ============================================================ */
+function renderBuyerBrowse(){
+  const vehicles = state.vehicles.filter(v => v.status !== 'removed');
+  return `
+  <div class="section-title"><h2>Browse Vehicles <span class="hi-label" style="font-size:14px;">वाहन देखें</span></h2></div>
+  ${vehicles.length === 0 ? `<div class="empty"><div class="big">🚗💨</div>No vehicles listed yet. Check back soon!</div>` : `
+  <div class="roles-grid" style="grid-template-columns:repeat(3,1fr);">
+    ${vehicles.map(v => `
+      <div class="card" style="padding:16px;">
+        ${v.photos.length ? `<img src="${v.photos[0].dataURL}" style="width:100%; height:130px; object-fit:cover; border-radius:10px; margin-bottom:10px;">` : `<div style="width:100%; height:130px; background:var(--paper); border-radius:10px; margin-bottom:10px; display:flex; align-items:center; justify-content:center; font-size:34px;">🚗</div>`}
+        <h3 style="margin:0 0 2px; font-size:17px;">${esc(v.make)} ${esc(v.model)} <span class="mono" style="font-size:13px; font-weight:400; color:var(--asphalt);">'${v.year}</span></h3>
+        <div style="font-size:13px; color:var(--asphalt); margin-bottom:10px;">${esc(v.km)} km · ${esc(v.fuel)}</div>
+        <div style="font-family:'Baloo 2'; font-size:20px; font-weight:700; margin-bottom:10px;">${inr(v.price)}</div>
+        <button class="btn btn-primary btn-sm" style="width:100%;" onclick="openApplyModal('${v.id}')">Apply for Loan</button>
+      </div>
+    `).join('')}
+  </div>`}
+  ${renderApplyModal()}
+  `;
+}
+
+function openApplyModal(vehicleId){
+  draft.applyVehicleId = vehicleId;
+  draft.applyDocs = [];
+  render();
+  setTimeout(() => document.getElementById('modal-root') && document.getElementById('modal-root').scrollIntoView({behavior:'smooth'}), 50);
+}
+function closeApplyModal(){ draft.applyVehicleId = null; draft.applyDocs = []; render(); }
+
+function renderApplyModal(){
+  if(!draft.applyVehicleId) return '';
+  const v = state.vehicles.find(x => x.id === draft.applyVehicleId);
+  if(!v) return '';
+  const docs = draft.applyDocs || [];
+  return `
+  <div class="modal-bg" id="modal-root" onclick="if(event.target===this) closeApplyModal()">
+    <div class="modal">
+      <div class="section-title"><h2 style="font-size:20px;">Apply: ${esc(v.make)} ${esc(v.model)}</h2></div>
+      <form onsubmit="return submitApplication(event)">
+        <div class="field">
+          <label>Loan amount requested <span class="hi-label">ऋण राशि</span></label>
+          <input id="app-amount" type="number" min="10000" max="${v.price}" value="${Math.round(v.price*0.8)}" required>
+        </div>
+        <div class="field">
+          <label>Tenure (months)</label>
+          <select id="app-tenure">
+            <option value="12">12</option><option value="24">24</option>
+            <option value="36" selected>36</option><option value="48">48</option><option value="60">60</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Documents (ID proof, income proof, address proof) <span class="hi-label">दस्तावेज़</span></label>
+          <label class="upload-box" for="app-doc-input">📎 Click to upload files (PDF / image)</label>
+          <input id="app-doc-input" type="file" multiple accept="image/*,.pdf" style="display:none;" onchange="handleAppDocUpload(this.files)">
+          <div id="app-doc-list">${docs.map(f => renderFileChip(f, `removeAppDoc('${f.id}')`)).join('')}</div>
+        </div>
+        <div class="field">
+          <label>Notes for the financer <span class="hi-label">फाइनेंसर के लिए नोट</span></label>
+          <div class="mic-row">
+            <textarea id="app-notes" placeholder="Type or use the mic — supports Hindi & other Indian languages"></textarea>
+            <button type="button" class="mic-btn" id="mic-app-notes" onclick="toggleMic('app-notes')" title="Speak">🎙️</button>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:16px;">
+          <button type="button" class="btn btn-ghost" style="flex:1;" onclick="closeApplyModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;">Submit Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  `;
+}
+
+function handleAppDocUpload(files){
+  readFilesAsDataURL(files, results => {
+    draft.applyDocs = (draft.applyDocs || []).concat(results);
+    document.getElementById('app-doc-list').innerHTML = draft.applyDocs.map(f => renderFileChip(f, `removeAppDoc('${f.id}')`)).join('');
+  });
+}
+function removeAppDoc(id){
+  draft.applyDocs = (draft.applyDocs || []).filter(f => f.id !== id);
+  document.getElementById('app-doc-list').innerHTML = draft.applyDocs.map(f => renderFileChip(f, `removeAppDoc('${f.id}')`)).join('');
+}
+
+function submitApplication(evt){
+  evt.preventDefault();
+  const v = state.vehicles.find(x => x.id === draft.applyVehicleId);
+  const amount = Number(document.getElementById('app-amount').value);
+  const tenure = Number(document.getElementById('app-tenure').value);
+  const notes = document.getElementById('app-notes').value;
+  const app = {
+    id: uid(),
+    buyerId: state.session.userId,
+    vehicleId: v.id,
+    sellerId: v.sellerId,
+    financerId: null,
+    loanAmount: amount,
+    tenure,
+    notes,
+    documents: draft.applyDocs || [],
+    status: 'submitted',
+    createdAt: now(),
+    timeline: [{date: now(), status:'submitted', by:'Buyer', remark:'Application submitted.'}],
+  };
+  state.applications.push(app);
+  saveDB();
+  closeApplyModal();
+  toast('✅ Application submitted! Financers will review it soon.');
+  state.activeTab = 'apply';
+  render();
+  return false;
+}
+
+function renderBuyerApplications(){
+  const apps = state.applications.filter(a => a.buyerId === state.session.userId).sort((a,b)=> b.createdAt.localeCompare(a.createdAt));
+  return `
+  <div class="section-title"><h2>My Applications <span class="hi-label" style="font-size:14px;">मेरे आवेदन</span></h2></div>
+  ${apps.length === 0 ? `<div class="empty"><div class="big">📋</div>No applications yet. Browse vehicles to apply for a loan.</div>` : `
+  <table>
+    <thead><tr><th>Vehicle</th><th>Amount</th><th>Tenure</th><th>Status</th><th>Applied</th><th></th></tr></thead>
+    <tbody>
+      ${apps.map(a => {
+        const v = state.vehicles.find(x => x.id === a.vehicleId);
+        return `<tr>
+          <td>${v ? esc(v.make)+' '+esc(v.model) : '—'}</td>
+          <td class="mono">${inr(a.loanAmount)}</td>
+          <td>${a.tenure} mo</td>
+          <td><span class="pill pill-${a.status}">${a.status.replace('_',' ')}</span></td>
+          <td>${fmtDate(a.createdAt)}</td>
+          <td><button class="link-btn" onclick="openTimelineModal('${a.id}')">View timeline</button></td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>`}
+  ${renderTimelineModal()}
+  `;
+}
+
+function openTimelineModal(appId){ draft.timelineAppId = appId; render(); }
+function closeTimelineModal(){ draft.timelineAppId = null; render(); }
+function renderTimelineModal(){
+  if(!draft.timelineAppId) return '';
+  const a = state.applications.find(x => x.id === draft.timelineAppId);
+  if(!a) return '';
+  const v = state.vehicles.find(x => x.id === a.vehicleId);
+  return `
+  <div class="modal-bg" onclick="if(event.target===this) closeTimelineModal()">
+    <div class="modal">
+      <div class="section-title"><h2 style="font-size:19px;">${v?esc(v.make)+' '+esc(v.model):'Application'} — Timeline</h2></div>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        ${a.timeline.slice().reverse().map(t => `
+          <div style="border-left:3px solid var(--marigold); padding-left:12px;">
+            <div style="font-weight:700; font-size:13.5px;">${t.status.replace('_',' ')} <span style="font-weight:400; color:var(--asphalt-light); font-size:12px;">· ${fmtDate(t.date)}</span></div>
+            <div style="font-size:13px; color:var(--asphalt);">${esc(t.remark || '')} ${t.by ? '— <em>'+esc(t.by)+'</em>' : ''}</div>
+          </div>
+        `).join('')}
+      </div>
+      <button class="btn btn-ghost" style="width:100%; margin-top:18px;" onclick="closeTimelineModal()">Close</button>
+    </div>
+  </div>`;
+}
+
+function renderEMICalculator(){
+  const amt = draft.emiAmount || 500000;
+  const rate = draft.emiRate || 9.5;
+  const tenure = draft.emiTenure || 36;
+  const r = rate/12/100;
+  const emi = amt * r * Math.pow(1+r, tenure) / (Math.pow(1+r, tenure) - 1);
+  const total = emi * tenure;
+  const interest = total - amt;
+  return `
+  <div class="section-title"><h2>EMI Calculator <span class="hi-label" style="font-size:14px;">ईएमआई कैलकुलेटर</span></h2></div>
+  <div class="card" style="max-width:480px;">
+    <div class="field"><label>Loan amount</label><input type="number" value="${amt}" oninput="draft.emiAmount=Number(this.value); render();"></div>
+    <div class="field"><label>Interest rate (% p.a.)</label><input type="number" step="0.1" value="${rate}" oninput="draft.emiRate=Number(this.value); render();"></div>
+    <div class="field"><label>Tenure (months)</label><input type="number" value="${tenure}" oninput="draft.emiTenure=Number(this.value); render();"></div>
+    <div class="road-divider" style="margin:20px 0;"></div>
+    <div class="stat-grid" style="grid-template-columns:1fr 1fr;">
+      <div class="stat"><div class="num">${inr(Math.round(emi))}</div><div class="lbl">Monthly EMI</div></div>
+      <div class="stat"><div class="num">${inr(Math.round(interest))}</div><div class="lbl">Total interest</div></div>
+    </div>
+  </div>
+  `;
+}
+
+/* ============================================================
+   SELLER
+   ============================================================ */
+function renderSellerListings(){
+  const vehicles = state.vehicles.filter(v => v.sellerId === state.session.userId);
+  return `
+  <div class="section-title"><h2>My Listings <span class="hi-label" style="font-size:14px;">मेरी गाड़ियाँ</span></h2>
+    <button class="btn btn-primary btn-sm" onclick="state.activeTab='new'; render();">➕ List a Vehicle</button>
+  </div>
+  ${vehicles.length === 0 ? `<div class="empty"><div class="big">🚙</div>You haven't listed any vehicles yet.</div>` : `
+  <table>
+    <thead><tr><th>Vehicle</th><th>Price</th><th>Docs</th><th>Applications</th></tr></thead>
+    <tbody>
+      ${vehicles.map(v => {
+        const apps = state.applications.filter(a => a.vehicleId === v.id);
+        return `<tr>
+          <td>${esc(v.make)} ${esc(v.model)} '${v.year}</td>
+          <td class="mono">${inr(v.price)}</td>
+          <td>${v.docs.length} file(s)</td>
+          <td>${apps.length}</td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>`}
+  `;
+}
+
+function renderSellerNewVehicle(){
+  const photos = draft.newVehiclePhotos || [];
+  const docs = draft.newVehicleDocs || [];
+  return `
+  <div class="section-title"><h2>List a Vehicle <span class="hi-label" style="font-size:14px;">गाड़ी जोड़ें</span></h2></div>
+  <div class="card" style="max-width:560px;">
+    <form onsubmit="return submitNewVehicle(event)">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div class="field"><label>Make</label><input id="v-make" placeholder="e.g. Maruti Suzuki" required></div>
+        <div class="field"><label>Model</label><input id="v-model" placeholder="e.g. Swift VXi" required></div>
+        <div class="field"><label>Year</label><input id="v-year" type="number" min="1990" max="2026" value="2020" required></div>
+        <div class="field"><label>KM driven</label><input id="v-km" type="number" min="0" value="30000" required></div>
+        <div class="field"><label>Fuel type</label>
+          <select id="v-fuel"><option>Petrol</option><option>Diesel</option><option>CNG</option><option>Electric</option></select>
+        </div>
+        <div class="field"><label>Asking price (₹)</label><input id="v-price" type="number" min="10000" value="450000" required></div>
+      </div>
+      <div class="field">
+        <label>Description <span class="hi-label">विवरण</span></label>
+        <div class="mic-row">
+          <textarea id="v-desc" placeholder="Describe the vehicle's condition — type or speak in Hindi/your language"></textarea>
+          <button type="button" class="mic-btn" id="mic-v-desc" onclick="toggleMic('v-desc')">🎙️</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Photos</label>
+        <label class="upload-box" for="v-photo-input">🖼️ Click to upload photos</label>
+        <input id="v-photo-input" type="file" multiple accept="image/*" style="display:none;" onchange="handleVehiclePhotoUpload(this.files)">
+        <div id="v-photo-list" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+          ${photos.map(f => `<div style="position:relative;"><img src="${f.dataURL}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;"><button onclick="removeVehiclePhoto('${f.id}')" style="position:absolute;top:-6px;right:-6px;background:var(--alert);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;">✕</button></div>`).join('')}
+        </div>
+      </div>
+      <div class="field">
+        <label>Documents (RC book, insurance, seller ID)</label>
+        <label class="upload-box" for="v-doc-input">📎 Click to upload documents</label>
+        <input id="v-doc-input" type="file" multiple accept="image/*,.pdf" style="display:none;" onchange="handleVehicleDocUpload(this.files)">
+        <div id="v-doc-list">${docs.map(f => renderFileChip(f, `removeVehicleDoc('${f.id}')`)).join('')}</div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; margin-top:8px;">Publish Listing</button>
+    </form>
+  </div>
+  `;
+}
+
+function handleVehiclePhotoUpload(files){
+  readFilesAsDataURL(files, results => {
+    draft.newVehiclePhotos = (draft.newVehiclePhotos || []).concat(results);
+    document.getElementById('v-photo-list').innerHTML = draft.newVehiclePhotos.map(f => `<div style="position:relative;"><img src="${f.dataURL}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;"><button onclick="removeVehiclePhoto('${f.id}')" style="position:absolute;top:-6px;right:-6px;background:var(--alert);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;">✕</button></div>`).join('');
+  });
+}
+function removeVehiclePhoto(id){
+  draft.newVehiclePhotos = (draft.newVehiclePhotos||[]).filter(f=>f.id!==id);
+  document.getElementById('v-photo-list').innerHTML = draft.newVehiclePhotos.map(f => `<div style="position:relative;"><img src="${f.dataURL}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;"><button onclick="removeVehiclePhoto('${f.id}')" style="position:absolute;top:-6px;right:-6px;background:var(--alert);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;">✕</button></div>`).join('');
+}
+function handleVehicleDocUpload(files){
+  readFilesAsDataURL(files, results => {
+    draft.newVehicleDocs = (draft.newVehicleDocs || []).concat(results);
+    document.getElementById('v-doc-list').innerHTML = draft.newVehicleDocs.map(f => renderFileChip(f, `removeVehicleDoc('${f.id}')`)).join('');
+  });
+}
+function removeVehicleDoc(id){
+  draft.newVehicleDocs = (draft.newVehicleDocs||[]).filter(f=>f.id!==id);
+  document.getElementById('v-doc-list').innerHTML = draft.newVehicleDocs.map(f => renderFileChip(f, `removeVehicleDoc('${f.id}')`)).join('');
+}
+
+function submitNewVehicle(evt){
+  evt.preventDefault();
+  const vehicle = {
+    id: uid(),
+    sellerId: state.session.userId,
+    make: document.getElementById('v-make').value,
+    model: document.getElementById('v-model').value,
+    year: document.getElementById('v-year').value,
+    km: document.getElementById('v-km').value,
+    fuel: document.getElementById('v-fuel').value,
+    price: Number(document.getElementById('v-price').value),
+    desc: document.getElementById('v-desc').value,
+    photos: draft.newVehiclePhotos || [],
+    docs: draft.newVehicleDocs || [],
+    status: 'active',
+    createdAt: now(),
+  };
+  state.vehicles.push(vehicle);
+  saveDB();
+  draft.newVehiclePhotos = [];
+  draft.newVehicleDocs = [];
+  toast('✅ Vehicle listed successfully!');
+  state.activeTab = 'listings';
+  render();
+  return false;
+}
+
+function renderSellerInterest(){
+  const myVehicleIds = state.vehicles.filter(v => v.sellerId === state.session.userId).map(v=>v.id);
+  const apps = state.applications.filter(a => myVehicleIds.includes(a.vehicleId)).sort((a,b)=> b.createdAt.localeCompare(a.createdAt));
+  return `
+  <div class="section-title"><h2>Loan Interest <span class="hi-label" style="font-size:14px;">लोन रुचि</span></h2></div>
+  ${apps.length === 0 ? `<div class="empty"><div class="big">📥</div>No loan applications on your vehicles yet.</div>` : `
+  <table>
+    <thead><tr><th>Vehicle</th><th>Requested</th><th>Status</th><th>Applied</th></tr></thead>
+    <tbody>
+      ${apps.map(a => {
+        const v = state.vehicles.find(x => x.id === a.vehicleId);
+        return `<tr><td>${esc(v.make)} ${esc(v.model)}</td><td class="mono">${inr(a.loanAmount)}</td><td><span class="pill pill-${a.status}">${a.status.replace('_',' ')}</span></td><td>${fmtDate(a.createdAt)}</td></tr>`;
+      }).join('')}
+    </tbody>
+  </table>`}
+  `;
+}
+
+/* ============================================================
+   FINANCER
+   ============================================================ */
+function renderFinancerQueue(){
+  const apps = state.applications.filter(a => a.status === 'submitted' || a.status === 'under_review').sort((a,b)=> a.createdAt.localeCompare(b.createdAt));
+  return `
+  <div class="section-title"><h2>Application Queue <span class="hi-label" style="font-size:14px;">आवेदन कतार</span></h2></div>
+  ${apps.length === 0 ? `<div class="empty"><div class="big">📬</div>No pending applications right now.</div>` : `
+  <div style="display:flex; flex-direction:column; gap:14px;">
+    ${apps.map(a => renderFinancerAppCard(a)).join('')}
+  </div>`}
+  ${renderDecisionModal()}
+  `;
+}
+
+function renderFinancerAppCard(a){
+  const v = state.vehicles.find(x => x.id === a.vehicleId);
+  const buyer = state.users.find(u => u.id === a.buyerId);
+  return `
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+      <div>
+        <h3 style="margin:0 0 4px;">${v ? esc(v.make)+' '+esc(v.model)+" '"+v.year : 'Vehicle'}</h3>
+        <div style="font-size:13px; color:var(--asphalt);">Buyer: ${buyer?esc(buyer.name):'—'} · ${buyer?esc(buyer.phone):''}</div>
+      </div>
+      <span class="pill pill-${a.status}">${a.status.replace('_',' ')}</span>
+    </div>
+    <div style="display:flex; gap:24px; margin:12px 0; flex-wrap:wrap; font-size:13.5px;">
+      <div><strong>Requested:</strong> <span class="mono">${inr(a.loanAmount)}</span></div>
+      <div><strong>Tenure:</strong> ${a.tenure} mo</div>
+      <div><strong>Vehicle price:</strong> <span class="mono">${v?inr(v.price):'—'}</span></div>
+    </div>
+    ${a.notes ? `<p style="font-size:13px; color:var(--asphalt); background:var(--paper); padding:10px 12px; border-radius:8px;">📝 ${esc(a.notes)}</p>` : ''}
+    <div style="display:flex; flex-wrap:wrap; gap:6px; margin:10px 0;">
+      ${a.documents.map(d => `<a class="pill" style="background:var(--paper); color:var(--ink);" href="${d.dataURL}" target="_blank">📄 ${esc(d.name)}</a>`).join('')}
+      ${v ? v.docs.map(d => `<a class="pill" style="background:var(--paper); color:var(--ink);" href="${d.dataURL}" target="_blank">🚗 ${esc(d.name)}</a>`).join('') : ''}
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-green btn-sm" onclick="openDecisionModal('${a.id}','approved')">✅ Approve</button>
+      <button class="btn btn-alert btn-sm" onclick="openDecisionModal('${a.id}','rejected')">❌ Reject</button>
+      <button class="btn btn-ghost btn-sm" onclick="openDecisionModal('${a.id}','under_review')">🔍 Request more info</button>
+    </div>
+  </div>
+  `;
+}
+
+function openDecisionModal(appId, decision){
+  draft.decisionAppId = appId;
+  draft.decisionType = decision;
+  render();
+}
+function closeDecisionModal(){ draft.decisionAppId = null; render(); }
+
+function renderDecisionModal(){
+  if(!draft.decisionAppId) return '';
+  const a = state.applications.find(x => x.id === draft.decisionAppId);
+  if(!a) return '';
+  const labels = {approved:'Approve application', rejected:'Reject application', under_review:'Request more information'};
+  return `
+  <div class="modal-bg" onclick="if(event.target===this) closeDecisionModal()">
+    <div class="modal">
+      <div class="section-title"><h2 style="font-size:19px;">${labels[draft.decisionType]}</h2></div>
+      <form onsubmit="return submitDecision(event)">
+        <div class="field">
+          <label>Remark for the buyer <span class="hi-label">टिप्पणी</span></label>
+          <div class="mic-row">
+            <textarea id="decision-remark" placeholder="Type or speak your remark"></textarea>
+            <button type="button" class="mic-btn" id="mic-decision-remark" onclick="toggleMic('decision-remark')">🎙️</button>
+          </div>
+        </div>
+        ${draft.decisionType === 'approved' ? `
+        <div class="field"><label>Approved interest rate (% p.a.)</label><input id="decision-rate" type="number" step="0.1" value="9.5"></div>
+        ` : ''}
+        <div style="display:flex; gap:10px; margin-top:14px;">
+          <button type="button" class="btn btn-ghost" style="flex:1;" onclick="closeDecisionModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>`;
+}
+
+function submitDecision(evt){
+  evt.preventDefault();
+  const a = state.applications.find(x => x.id === draft.decisionAppId);
+  const remark = document.getElementById('decision-remark').value;
+  a.status = draft.decisionType;
+  a.financerId = state.session.userId;
+  if(draft.decisionType === 'approved'){
+    a.approvedRate = Number(document.getElementById('decision-rate').value);
+  }
+  a.timeline.push({date: now(), status: draft.decisionType, by:'Financer', remark});
+  saveDB();
+  closeDecisionModal();
+  toast('✅ Decision recorded.');
+  render();
+  return false;
+}
+
+function renderFinancerHistory(){
+  const apps = state.applications.filter(a => a.financerId === state.session.userId).sort((a,b)=> b.createdAt.localeCompare(a.createdAt));
+  return `
+  <div class="section-title"><h2>Decision History <span class="hi-label" style="font-size:14px;">निर्णय इतिहास</span></h2></div>
+  ${apps.length === 0 ? `<div class="empty"><div class="big">🗂️</div>You haven't made any decisions yet.</div>` : `
+  <table>
+    <thead><tr><th>Vehicle</th><th>Amount</th><th>Decision</th><th>Date</th></tr></thead>
+    <tbody>
+      ${apps.map(a => {
+        const v = state.vehicles.find(x => x.id === a.vehicleId);
+        return `<tr><td>${v?esc(v.make)+' '+esc(v.model):'—'}</td><td class="mono">${inr(a.loanAmount)}</td><td><span class="pill pill-${a.status}">${a.status.replace('_',' ')}</span></td><td>${fmtDate(a.createdAt)}</td></tr>`;
+      }).join('')}
+    </tbody>
+  </table>`}
+  `;
+}
+
+/* ============================================================
+   ADMIN
+   ============================================================ */
+function renderAdminOverview(){
+  const counts = {
+    users: state.users.length,
+    vehicles: state.vehicles.length,
+    applications: state.applications.length,
+    approved: state.applications.filter(a=>a.status==='approved'||a.status==='disbursed').length,
+  };
+  return `
+  <div class="section-title"><h2>Overview <span class="hi-label" style="font-size:14px;">विवरण</span></h2></div>
+  <div class="stat-grid">
+    <div class="stat"><div class="num">${counts.users}</div><div class="lbl">Total users</div></div>
+    <div class="stat"><div class="num">${counts.vehicles}</div><div class="lbl">Vehicle listings</div></div>
+    <div class="stat"><div class="num">${counts.applications}</div><div class="lbl">Loan applications</div></div>
+    <div class="stat"><div class="num">${counts.approved}</div><div class="lbl">Approved loans</div></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0;">Recent applications</h3>
+    ${state.applications.length === 0 ? `<div class="empty">No applications yet.</div>` : `
+    <table>
+      <thead><tr><th>Vehicle</th><th>Buyer</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+        ${state.applications.slice().sort((a,b)=>b.createdAt.localeCompare(a.createdAt)).slice(0,8).map(a => {
+          const v = state.vehicles.find(x=>x.id===a.vehicleId);
+          const buyer = state.users.find(u=>u.id===a.buyerId);
+          return `<tr><td>${v?esc(v.make)+' '+esc(v.model):'—'}</td><td>${buyer?esc(buyer.name):'—'}</td><td class="mono">${inr(a.loanAmount)}</td><td><span class="pill pill-${a.status}">${a.status.replace('_',' ')}</span></td><td>${fmtDate(a.createdAt)}</td></tr>`;
+        }).join('')}
+      </tbody>
+    </table>`}
+  </div>
+  `;
+}
+
+function renderAdminUsers(){
+  return `
+  <div class="section-title"><h2>Users <span class="hi-label" style="font-size:14px;">उपयोगकर्ता</span></h2></div>
+  <table>
+    <thead><tr><th>Name</th><th>Phone</th><th>Role</th><th>Joined</th></tr></thead>
+    <tbody>
+      ${state.users.map(u => `<tr><td>${esc(u.name)}</td><td class="mono">${esc(u.phone)}</td><td><span class="pill" style="background:var(--paper); color:var(--ink);">${u.role}</span></td><td>${fmtDate(u.createdAt)}</td></tr>`).join('')}
+    </tbody>
+  </table>
+  `;
+}
+
+function renderAdminVehicles(){
+  return `
+  <div class="section-title"><h2>Vehicles <span class="hi-label" style="font-size:14px;">वाहन</span></h2></div>
+  ${state.vehicles.length === 0 ? `<div class="empty">No vehicles listed.</div>` : `
+  <table>
+    <thead><tr><th>Vehicle</th><th>Seller</th><th>Price</th><th>Docs</th><th>Listed</th></tr></thead>
+    <tbody>
+      ${state.vehicles.map(v => {
+        const seller = state.users.find(u=>u.id===v.sellerId);
+        return `<tr><td>${esc(v.make)} ${esc(v.model)} '${v.year}</td><td>${seller?esc(seller.name):'—'}</td><td class="mono">${inr(v.price)}</td><td>${v.docs.length}</td><td>${fmtDate(v.createdAt)}</td></tr>`;
+      }).join('')}
+    </tbody>
+  </table>`}
+  `;
+}
+
+function renderAdminApplications(){
+  return `
+  <div class="section-title"><h2>Applications <span class="hi-label" style="font-size:14px;">आवेदन</span></h2></div>
+  ${state.applications.length === 0 ? `<div class="empty">No applications yet.</div>` : `
+  <table>
+    <thead><tr><th>Vehicle</th><th>Buyer</th><th>Amount</th><th>Status</th><th>Override</th></tr></thead>
+    <tbody>
+      ${state.applications.map(a => {
+        const v = state.vehicles.find(x=>x.id===a.vehicleId);
+        const buyer = state.users.find(u=>u.id===a.buyerId);
+        return `<tr>
+          <td>${v?esc(v.make)+' '+esc(v.model):'—'}</td>
+          <td>${buyer?esc(buyer.name):'—'}</td>
+          <td class="mono">${inr(a.loanAmount)}</td>
+          <td><span class="pill pill-${a.status}">${a.status.replace('_',' ')}</span></td>
+          <td>
+            <select onchange="adminOverrideStatus('${a.id}', this.value)">
+              <option value="">Change…</option>
+              <option value="submitted">Submitted</option>
+              <option value="under_review">Under review</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="disbursed">Disbursed</option>
+            </select>
+          </td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>`}
+  `;
+}
+
+function adminOverrideStatus(appId, newStatus){
+  if(!newStatus) return;
+  const a = state.applications.find(x => x.id === appId);
+  a.status = newStatus;
+  a.timeline.push({date: now(), status:newStatus, by:'Admin', remark:'Status overridden by admin.'});
+  saveDB();
+  toast('Status updated to ' + newStatus.replace('_',' '));
+  render();
+}
+
+/* ---------- init ---------- */
+render();
+</script>
+</body>
+</html>
